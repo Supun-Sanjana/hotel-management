@@ -29,7 +29,7 @@ const userSchema =  mongoose.Schema({
     },
     phoneNumber: {
         type: String,
-        required: true,
+        required: false,
     },
     disabled: {
         type: Boolean,

@@ -1,5 +1,6 @@
 import User from "../Models/user.js";
 import jwt from "jsonwebtoken";
+import bcrypt from "bcrypt";
 
 export function getUsers(req, res) {
 
@@ -17,9 +18,15 @@ export function getUsers(req, res) {
 
 
 export function postUsers(req, res) {
-
   const user = req.body;
   //user -> req user data
+
+
+  const password = req.body.password;
+
+  const saltRound = 10;
+  const hashedPassword = bcrypt.hashSync(password, saltRound);
+  user.password = hashedPassword;
   
   const newUser = new User(user);
   // User -> model name
@@ -68,34 +75,42 @@ export function deleteUsers(req, res) {
 
   
 
-export function loginUser(req, res) {
+  export function loginUser(req, res) {
     const credentials = req.body;
-
-    User.findOne({email : credentials.email , password : credentials.password}).then((user)=>{
-        if(user == null){
-            res.status(404).json({
-               message : "User Not Found"
-           })
-            
-        }else{
-
-          const payload = {
-            id: user._id,
-            firstName: user.firstName,
-            lastName: user.lastName,
-            email: user.email,
-            type: user.type
-          };
-          
-          const token = jwt.sign(payload, "secretKey", { expiresIn: "1h" });
-          
-          res.json({
-            message: "User Found",
-            user: user,
-            token: token
-          });
-          
-        }
-    })
-
+  
+    User.findOne({ email: credentials.email }).then((user) => {
+      if (!user) {
+        return res.status(404).json({
+          message: "User Not Found"
+        });
+      }
+  
+      const isPasswordValid = bcrypt.compareSync(credentials.password, user.password);
+  
+      if (!isPasswordValid) {
+        return res.status(401).json({
+          message: "Invalid Password"
+        });
+      }
+  
+      const payload = {
+        id: user._id,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        type: user.type
+      };
+  
+      const token = jwt.sign(payload, "secretKey", { expiresIn: "1h" });
+  
+      res.json({
+        message: "User Found",
+        user: user,
+        token: token
+      });
+    }).catch((err) => {
+      console.error("Login error:", err);
+      res.status(500).json({ message: "Internal Server Error" });
+    });
   }
+  
