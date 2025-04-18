@@ -1,5 +1,5 @@
 //Create gallery item 
-import GalleryItem from '../Models/galleryItem.js';
+import GalleryItem from '../Models/galleryItem.js'; 
 
 
 
@@ -45,6 +45,15 @@ export function getGalleryItem(req, res){
 
 
 export function deleteGalleryItem(req, res){
+
+    if (!user) {
+        return res.status(401).json({ message: "Login required" });
+    }
+
+    if (user.type !== "admin") {
+        return res.status(403).json({ message: "Permission denied" });
+    }
+
     const deleteName = req.body.name;
     GalleryItem.deleteOne({name : deleteName}).then(()=>{
         console.log("Gallery item deleted from database");
