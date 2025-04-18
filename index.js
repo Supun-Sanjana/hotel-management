@@ -6,6 +6,8 @@ import mongoose from 'mongoose';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 import categoryRouter from './Routes/categoryRoutes.js';
+import roomRouter from './Routes/roomroute.js';
+import bookingRouter from './Routes/bookingRoute.js';
 
 dotenv.config();
 
@@ -57,6 +59,8 @@ app.use("/api/users", userRouter);
 app.use("/api/users/login", userRouter);
 app.use("/api/gallery", gallerItemRouter);
 app.use("/api/category", categoryRouter);
+app.use("/api/room", roomRouter);
+app.use("/api/booking", bookingRouter);
 
 
 

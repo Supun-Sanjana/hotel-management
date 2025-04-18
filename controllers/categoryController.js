@@ -1,4 +1,5 @@
 import Category from "../Models/category.js";
+import {isAdminValid} from "../controllers/userController.js"
 
 export function postCategory(req, res) {
 
@@ -101,7 +102,7 @@ export function getCategoryByName(req, res) {
     }
         
     const categoryName = req.params.name;
-    Category.updateOne({ name: categoryName },req.body).then(()=>{
+    Category.findOneAndUpdate({ name: categoryName },req.body).then(()=>{
         res.json({
             message : "Category updated successfully"
         });
@@ -113,13 +114,3 @@ export function getCategoryByName(req, res) {
 
 
 
-function isAdminValid(req){
-    if (req.user == null) {
-        return false; 
-    }
-
-    if (req.user.type !== "admin") {
-        return false;
-    }
-    return true;
-}

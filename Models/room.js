@@ -3,31 +3,35 @@ import mongoose from "mongoose";
 const roomSchema = new mongoose.Schema({
     roomId:{
         type:"String",
-        required:true
+        required:true,
+        unique: true
     },
     category:{
-        requred:true
+        type:String,
+        required:true
     },
     avaliable:{
         type:Boolean,
-        required:true
+        required:true,
+        default:true
     },
-    maxGuest:{
+    maxGuests:{
         type:Number,
-        required: true
+        required: true,
+        default: 3,
     },
     photos:[{
         type:String
     }],
     SpecialDescription:{
-        type:String
+        type:String,
+        default:""
+    },
+    note:{
+        type:String,
+        default:""
     }
 })
-
-
-
-
-
 
 
 
